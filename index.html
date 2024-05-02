@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Погода</title>
+</head>
+<body>
+    <h1>Дізнатися погоду</h1>
+    <form>
+        <label>Введіть назву міста:</label>
+        <input type="text" id="city-name"><br>
+        <input type="button" value="Знайти" id="search-button">
+    </form>
+    <div id="content-div"></div>
+    <script>
+        document.getElementById("search-button").onclick = () => {
+            let city = document.getElementById("city-name").value;
+            let url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=791e6648606761e60be69b5fad30e1b6";
+            let request = new XMLHttpRequest();
+            request.open("GET", url);
+            request.responseType = "json";
+            request.send();
+            request.onload = () => {
+                let weatherDoc = request.response;
+                handleJson(weatherDoc);
+            }
+        }
+        function handleJson(jsonDoc) {
+            let temperature = Math.round(jsonDoc.main.temp - 273.16);
+            let pressure = jsonDoc.main.pressure;
+            let windSpeed = jsonDoc.wind.speed;
+            let windDirection = jsonDoc.wind.deg;
+            let infoContent = `Температура (Цельсій): ${temperature}<br>Тиск (гПа): ${pressure}<br>` +
+            `Швидкість вітру (м/с): ${windSpeed}<br>напрямок вітру (градуси): ${windDirection}`;
+            document.getElementById("content-div").innerHTML = infoContent;
+        }
+    </script>
+</body>
+</html>
